@@ -3,40 +3,30 @@ unit GSMap.Geoocoder;
 interface
 
 uses
-  System.SysUtils, Vcl.Edge, System.JSON;
+  System.SysUtils, Vcl.Edge, System.JSON, GSMap.Address,
+  GSMap.Geoocoder.Configuration, GSMap.Localization;
 
 type
-TEnderecoCompleto = record
-      Logradouro: string;
-      Numero: string;
-      Bairro: string;
-      Cidade: string;
-      UF: string;
-      Pais: string;
-      Cep: string;
-    end;
-    TEndereco = record
-      Logradouro: string;
-      Endereco:string;
-      Numero: string;
-      Bairro: string;
-      Cidade: string;
-      UF: string;
-    end;
   TGSMapGeoocoder = class
   private
-   FBuscarEndereco: TProc<TEnderecoCompleto>;
+   FBuscarEndereco: TProc<TGSMapCompleteAddress>;
+   FOrigem:TGSMapAddressOrigemDestino;
+   FDestino:TGSMapAddressOrigemDestino;
+   FConfiguration:TGSMapGeoocoderConfiguration;
    FBrowser:TEdgeBrowser;
     procedure SetBrowser(const Value: TEdgeBrowser);
   public
     constructor Create(ABrowser:TEdgeBrowser)overload;
     destructor Destroy; override;
+    function Configuration:TGSMapGeoocoderConfiguration;
     function AddRoute:TGSMapGeoocoder;
+    function Origem:TGSMapAddressOrigemDestino;
+    function Destino:TGSMapAddressOrigemDestino;
     function RemoveRoute:TGSMapGeoocoder;
     procedure OnBuscarEndereco(AJSON:TJSONObject);overload;
-    procedure BuscarEndereco(ADescricao: string; AProc: TProc<TEnderecoCompleto>);
-    procedure TracarRota(AOrigem,ADestino:TEndereco;AProc:TProc<TEndereco> = nil);
-    function EnderecoParaString(Endereco:TEndereco):String;
+    procedure BuscarEndereco(ADescricao: string;
+  AProc: TProc<TGSMapCompleteAddress> = nil);
+    procedure TracarRota(AProc:TProc<TGSMapAddress> = nil);
   end;
 
 implementation
@@ -49,7 +39,7 @@ begin
 end;
 
 procedure TGSMapGeoocoder.BuscarEndereco(ADescricao: string;
-  AProc: TProc<TEnderecoCompleto>);
+  AProc: TProc<TGSMapCompleteAddress> = nil);
 begin
   if Assigned(AProc) then
     FBuscarEndereco := AProc;
@@ -60,30 +50,37 @@ begin
 end;
 
 
+function TGSMapGeoocoder.Configuration: TGSMapGeoocoderConfiguration;
+begin
+
+end;
+
 constructor TGSMapGeoocoder.Create(ABrowser:TEdgeBrowser);
 begin
   if not Assigned(ABrowser) then
     raise Exception.Create('Browser não informado ! x0716');
   FBrowser := ABrowser;
+  FOrigem := TGSMapAddressOrigemDestino.Create;
+  FDestino := TGSMapAddressOrigemDestino.Create;
+  FConfiguration := TGSMapGeoocoderConfiguration.Create
+end;
+
+function TGSMapGeoocoder.Destino: TGSMapAddressOrigemDestino;
+begin
+  Result := FDestino;
 end;
 
 destructor TGSMapGeoocoder.Destroy;
 begin
-
+  FOrigem.Free;
+  FDestino.Free;
+  FConfiguration.Free;
   inherited;
-end;
-
-function TGSMapGeoocoder.EnderecoParaString(Endereco: TEndereco): String;
-var
-  LResult:String;
-begin
-  Result := Endereco.Logradouro+' '+Endereco.Endereco+' '+Endereco.Numero+' ';
-  Result := Result+Endereco.Bairro+' '+Endereco.Cidade+' '+Endereco.UF;
 end;
 
 procedure TGSMapGeoocoder.OnBuscarEndereco(AJSON: TJSONObject);
 var
-  LEnderecoCompleto:TEnderecoCompleto;
+  LEnderecoCompleto:TGSMapCompleteAddress;
   LJSONObject:TJSONObject;
   I: Integer;
 begin
@@ -101,6 +98,11 @@ begin
     FBuscarEndereco(LEnderecoCompleto);
 end;
 
+function TGSMapGeoocoder.Origem: TGSMapAddressOrigemDestino;
+begin
+  Result := FOrigem;
+end;
+
 function TGSMapGeoocoder.RemoveRoute: TGSMapGeoocoder;
 begin
   Result := Self;
@@ -111,14 +113,9 @@ begin
   FBrowser := Value;
 end;
 
-procedure TGSMapGeoocoder.TracarRota(AOrigem, ADestino: TEndereco;
-  AProc: TProc<TEndereco>);
-var
-  LOrigem,LDestino:string;
+procedure TGSMapGeoocoder.TracarRota(AProc:TProc<TGSMapAddress> = nil);
 begin
-  LOrigem := EnderecoParaString(AOrigem);
-  LDestino := EnderecoParaString(ADestino);
-  FBrowser.ExecuteScript('GetDirectionsRoute('+QuotedStr(LOrigem)+','+QuotedStr(LDestino)+');');
+  FBrowser.ExecuteScript('GetDirectionsRoute('+QuotedStr(FOrigem.AdrressToString)+','+QuotedStr(FDestino.AdrressToString)+');');
 end;
 
 end.

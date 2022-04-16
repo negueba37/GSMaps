@@ -118,6 +118,9 @@
         <DCCReference Include="src\Model\GSMap.Geoocoder.pas"/>
         <DCCReference Include="src\Model\GSMap.Address.pas"/>
         <DCCReference Include="src\Model\GSMap.Events.pas"/>
+        <DCCReference Include="src\Model\GSMap.Geoocoder.Configuration.pas"/>
+        <DCCReference Include="src\Model\Localization\GSMap.Position.pas"/>
+        <DCCReference Include="src\Model\Localization\GSMap.Localization.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -144,7 +147,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win32\Debug\Maps.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="src\bin\Maps.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Maps.exe</RemoteName>
                         <Overwrite>true</Overwrite>
@@ -951,8 +954,8 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME).app"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>

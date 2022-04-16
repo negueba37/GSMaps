@@ -5,10 +5,7 @@ interface
 uses
   Vcl.Edge, System.Generics.Collections, System.Classes, System.SysUtils,
   System.JSON, Rest.JSON, StrUtils, GSMap.Configuracoes, GSMap.Geoocoder,
-  GSMap.Events;
-
-type
-  TEnumTipoMap = (Defaut, Satelite);
+  GSMap.Events, GSMap.Address;
 
 type
   TLocalizacao = class
@@ -21,30 +18,29 @@ type
   private
     FListLocalizacao: TObjectList<TLocalizacao>;
     FBrowser: TEdgeBrowser;
-    FMapa: TEnumTipoMap;
     FConfiguracao: TGSMapConfiguracoes;
     FGeoocoder: TGSMapGeoocoder;
     FEvents: TGsMapEvents;
+    FAddress:TGSMapAddressMap;
     procedure SetBrowser(const Value: TEdgeBrowser);
-    procedure OnTracarRota(AJSON: TJSONObject);
-    procedure SetMapa(const Value: TEnumTipoMap);
+ private
+    procedure LimparListaLocalizacao();
+    Procedure AddLocalizacao(ALatitude, ALongitude: string);
   public
     constructor Create();
     destructor Destroy(); override;
     function Configuracao: TGSMapConfiguracoes;
     function Geoocoder: TGSMapGeoocoder;
     function Events:TGsMapEvents;
-    procedure CarregarMapa(AUrl: string);
-    Procedure AddLocalizacao(ALatitude, ALongitude: string);
-    procedure LimparListaLocalizacao();
-    procedure MostrarLocalidades();
-    procedure MostrarMapa();
+
+    procedure LoadMap(AUrl: string);
+
+    function Address:TGSMapAddressMap;
+    procedure GoToLacalization();
     procedure CriarTodosPoligonos();
     // procedure de callback
   published
     property Browser: TEdgeBrowser write SetBrowser;
-    property Mapa: TEnumTipoMap read FMapa write SetMapa;
-
   end;
 
 implementation
@@ -60,7 +56,12 @@ begin
   FListLocalizacao.Add(LLocalizacao);
 end;
 
-procedure TGSMaps.CarregarMapa(AUrl: string);
+function TGSMaps.Address: TGSMapAddressMap;
+begin
+  Result := FAddress;
+end;
+
+procedure TGSMaps.LoadMap(AUrl: string);
 begin
   FBrowser.Navigate(AUrl);
 end;
@@ -74,6 +75,7 @@ constructor TGSMaps.Create;
 begin
   FConfiguracao := TGSMapConfiguracoes.Create();
   FListLocalizacao := TObjectList<TLocalizacao>.Create;
+  FAddress := TGSMapAddressMap.Create;
 end;
 
 procedure TGSMaps.CriarTodosPoligonos;
@@ -115,6 +117,8 @@ begin
     FListLocalizacao.Free;
   if Assigned(FEvents) then
     FEvents.Free;
+  if Assigned(FAddress) then
+    FAddress.Free;
   inherited;
 end;
 
@@ -130,43 +134,35 @@ begin
   Result := FGeoocoder;
 end;
 
-procedure TGSMaps.LimparListaLocalizacao;
-begin
-  FListLocalizacao.Clear;
-end;
-
-procedure TGSMaps.MostrarLocalidades;
-begin
-  FBrowser.ExecuteScript('');
-end;
-
-procedure TGSMaps.MostrarMapa;
+procedure TGSMaps.GoToLacalization;
 var
   LStrFun: string;
 begin
-  LStrFun := 'DoMap(' + FListLocalizacao[pred(FListLocalizacao.Count)].Latitude
-    + ',' + FListLocalizacao[pred(FListLocalizacao.Count)].Longitude +
-    ',"mtROADMAP",10,false,true,true,true, true,0,0,false,"#ECE9D8",true,"mtHYBRID;mtROADMAP;mtSATELLITE;mtTERRAIN;mtOSM","cpTOP_RIGHT",';
+
+
+
+
+
+  LStrFun := 'GoToMap('+FAddress.Position.Latitude.ToString.Replace(',','.',[rfReplaceAll])
+    + ',' + FAddress.Position.Longitude.ToString.Replace(',','.',[rfReplaceAll]) +
+    ',"'+FConfiguracao.VisibleMapToString+'",'+FConfiguracao.Zoom.ToString+',"#ECE9D8","mtHYBRID;mtROADMAP;mtSATELLITE;mtTERRAIN;mtOSM",';
   LStrFun := LStrFun +
-    '"mtcDEFAULT",true,true,true,"cpTOP_LEFT",true,"cpTOP_LEFT",true,"cpBOTTOM_LEFT","scDEFAULT",true,"cpTOP_LEFT",true,"cpTOP_LEFT","zcDEFAULT",false,false,false,false,';
+    '"scDEFAULT",true,"cpTOP_LEFT",true,"cpTOP_LEFT","zcDEFAULT",false,false,false,false,';
   LStrFun := LStrFun +
     'true,false,"","",false,true,false,"lcWHITE","tuCELSIUS","wsKILOMETERS_PER_HOUR")';
   FBrowser.ExecuteScript(LStrFun);
 end;
 
-procedure TGSMaps.OnTracarRota(AJSON: TJSONObject);
+procedure TGSMaps.LimparListaLocalizacao;
 begin
-  //
+  FListLocalizacao.Clear;
 end;
 
 procedure TGSMaps.SetBrowser(const Value: TEdgeBrowser);
 begin
   FBrowser := Value;
-  if not Assigned(FBrowser) then
-    Exit;
-  if (FBrowser <> Value) then
-    Exit;
-  // TEdgeBrowser(FBrowser).OnExecuteScript := OnExecuteScript;
+  if not Assigned(FBrowser) then Exit;
+  if (FBrowser <> Value) then  Exit;
 
   if Assigned(FGeoocoder) then
     FGeoocoder.Free;
@@ -176,11 +172,6 @@ begin
     FEvents.Free;
   FEvents := TGsMapEvents.Create(FBrowser);
   FEvents.Geoocoder := FGeoocoder;
-end;
-
-procedure TGSMaps.SetMapa(const Value: TEnumTipoMap);
-begin
-  FMapa := Value;
 end;
 
 end.

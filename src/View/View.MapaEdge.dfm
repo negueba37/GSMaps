@@ -18,9 +18,9 @@ object frmEdge: TfrmEdge
   TextHeight = 15
   object EdgeBrowser: TEdgeBrowser
     Left = 0
-    Top = 200
+    Top = 145
     Width = 709
-    Height = 241
+    Height = 296
     Align = alClient
     TabOrder = 0
     OnExecuteScript = EdgeBrowserExecuteScript
@@ -29,7 +29,7 @@ object frmEdge: TfrmEdge
     Left = 0
     Top = 0
     Width = 709
-    Height = 200
+    Height = 145
     Align = alTop
     ShowCaption = False
     TabOrder = 1
@@ -40,13 +40,12 @@ object frmEdge: TfrmEdge
       Height = 25
       Caption = 'Execute JS'
       TabOrder = 0
-      OnClick = Button3Click
     end
     object PageControl: TPageControl
       Left = 1
       Top = 1
       Width = 707
-      Height = 198
+      Height = 143
       ActivePage = TabSheet1
       Align = alClient
       TabOrder = 1
@@ -85,7 +84,6 @@ object frmEdge: TfrmEdge
               Align = alLeft
               Caption = 'Criar Poligono'
               TabOrder = 1
-              OnClick = Button2Click
             end
             object edtUf: TEdit
               Left = 560
@@ -129,6 +127,16 @@ object frmEdge: TfrmEdge
               Text = 'Cianorte'
               TextHint = 'Cidade'
               ExplicitHeight = 23
+            end
+            object Button8: TButton
+              Left = 185
+              Top = 1
+              Width = 112
+              Height = 30
+              Align = alLeft
+              Caption = 'GoToLocalization'
+              TabOrder = 6
+              OnClick = Button8Click
             end
           end
           object Panel4: TPanel
@@ -224,18 +232,38 @@ object frmEdge: TfrmEdge
           Left = 0
           Top = 0
           Width = 699
-          Height = 168
-          Align = alClient
+          Height = 129
+          Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
-          object Panel8: TPanel
+          object Label1: TLabel
+            Left = 0
+            Top = 37
+            Width = 699
+            Height = 15
+            Align = alTop
+            Alignment = taCenter
+            Caption = 'Destino'
+            ExplicitWidth = 40
+          end
+          object Label2: TLabel
             Left = 0
             Top = 0
             Width = 699
+            Height = 15
+            Align = alTop
+            Alignment = taCenter
+            Caption = 'Origem'
+            ExplicitWidth = 40
+          end
+          object pnlOrigem: TPanel
+            Left = 0
+            Top = 15
+            Width = 699
             Height = 22
             Align = alTop
-            Caption = 'Panel2'
             TabOrder = 0
+            OnClick = pnlOrigemClick
             object Edit1: TEdit
               Left = 637
               Top = 1
@@ -269,11 +297,11 @@ object frmEdge: TfrmEdge
               ExplicitHeight = 23
             end
             object Edit4: TEdit
-              Left = 226
+              Left = 101
               Top = 1
-              Width = 123
+              Width = 248
               Height = 20
-              Align = alRight
+              Align = alClient
               TabOrder = 3
               Text = 'Parecis'
               ExplicitHeight = 23
@@ -289,26 +317,25 @@ object frmEdge: TfrmEdge
               ExplicitHeight = 23
             end
             object Edit6: TEdit
-              Left = 171
+              Left = 1
               Top = 1
-              Width = 55
+              Width = 100
               Height = 20
-              Align = alRight
+              Align = alLeft
               TabOrder = 5
               Text = 'Rua'
               ExplicitHeight = 23
             end
           end
-          object Panel9: TPanel
+          object pnlDestino: TPanel
             Left = 0
-            Top = 22
+            Top = 52
             Width = 699
             Height = 22
             Align = alTop
-            Caption = 'Panel2'
             TabOrder = 1
             object Edit7: TEdit
-              Left = 562
+              Left = 637
               Top = 1
               Width = 61
               Height = 20
@@ -318,67 +345,67 @@ object frmEdge: TfrmEdge
               TextHint = 'UF'
               ExplicitHeight = 23
             end
-            object Button7: TButton
-              Left = 623
-              Top = 1
-              Width = 75
-              Height = 20
-              Align = alRight
-              Caption = 'Buscar'
-              TabOrder = 1
-              OnClick = Button7Click
-            end
             object Edit8: TEdit
-              Left = 335
+              Left = 410
               Top = 1
               Width = 123
               Height = 20
               Align = alRight
-              TabOrder = 2
+              TabOrder = 1
               Text = 'Bela vista'
               ExplicitHeight = 23
             end
             object Edit9: TEdit
-              Left = 458
+              Left = 533
               Top = 1
               Width = 104
               Height = 20
               Align = alRight
-              TabOrder = 3
+              TabOrder = 2
               Text = 'Cianorte'
               TextHint = 'Cidade'
               ExplicitHeight = 23
             end
             object Edit10: TEdit
-              Left = 151
+              Left = 101
               Top = 1
-              Width = 123
+              Width = 248
               Height = 20
-              Align = alRight
-              TabOrder = 4
+              Align = alClient
+              TabOrder = 3
               Text = 'Curruila'
               ExplicitHeight = 23
             end
             object Edit11: TEdit
-              Left = 274
+              Left = 349
               Top = 1
               Width = 61
               Height = 20
               Align = alRight
-              TabOrder = 5
+              TabOrder = 4
               Text = '59'
               ExplicitHeight = 23
             end
             object Edit12: TEdit
-              Left = 96
+              Left = 1
               Top = 1
-              Width = 55
+              Width = 100
               Height = 20
-              Align = alRight
-              TabOrder = 6
+              Align = alLeft
+              TabOrder = 5
               Text = 'Rua'
               ExplicitHeight = 23
             end
+          end
+          object Button7: TButton
+            Left = 0
+            Top = 74
+            Width = 699
+            Height = 23
+            Align = alTop
+            Caption = 'Buscar'
+            TabOrder = 2
+            OnClick = Button7Click
           end
         end
       end

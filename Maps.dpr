@@ -8,7 +8,10 @@ uses
   GSMap.Configuracoes in 'src\Model\GSMap.Configuracoes.pas',
   GSMap.Geoocoder in 'src\Model\GSMap.Geoocoder.pas',
   GSMap.Address in 'src\Model\GSMap.Address.pas',
-  GSMap.Events in 'src\Model\GSMap.Events.pas';
+  GSMap.Events in 'src\Model\GSMap.Events.pas',
+  GSMap.Geoocoder.Configuration in 'src\Model\GSMap.Geoocoder.Configuration.pas',
+  GSMap.Position in 'src\Model\Localization\GSMap.Position.pas',
+  GSMap.Localization in 'src\Model\Localization\GSMap.Localization.pas';
 
 {$R *.res}
 
